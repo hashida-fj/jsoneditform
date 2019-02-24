@@ -1,49 +1,49 @@
 import * as React from 'react';
 import './App.css';
 
-import * as njk from "nunjucks";
-
-import {JSONSchema6TypeName} from "json-schema";
 import Form, {IChangeEvent}from "react-jsonschema-form";
+import * as axiosBase from "axios";
 
-import logo from './logo.svg';
-
-const schema = {
-  properties: {
-    done: {
-      default: false,
-      title: "Done?",
-      type: "boolean" as JSONSchema6TypeName,
-    },
-
-    title: {
-      default: "A new task",
-      title: "Title",
-      type: "string" as JSONSchema6TypeName,
-    },
+const axios = axiosBase.default.create({
+  baseURL: 'http://localhost:5000',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest',
+    'Access-Control-Allow-Origin': "*"
   },
-  required: ["title"],
-  title: "Todo",
-  type: "object" as JSONSchema6TypeName,
-};
+  responseType: 'json'
+});
 
-
-// const log = (type: string) => console.log(type);
-const template = njk.compile("{{ title }}, {{ done }}")
 const onSubmit = (e: IChangeEvent) => {
-  console.log(template.render(e.formData))
+  axios.post("/api/save", e.formData)
 }
 
-class App extends React.Component {
+interface AppState {
+  data: any
+}
+
+class App extends React.Component<{}, AppState> {
+  public state = {
+    data: {}
+  }
+
+  public componentDidMount(){
+    console.log("here")
+    axios.get("/api/spec").then((res: any) => {
+      return res
+    }).then((json: {data: any}) => {
+      console.log(json)
+      this.setState({
+        data: json.data
+      })
+    }).catch(error => console.log(error))
+  }
+
   public render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
         <Form
-          schema={schema}
+          schema={this.state.data}
           onSubmit={onSubmit}
         />
       </div>
