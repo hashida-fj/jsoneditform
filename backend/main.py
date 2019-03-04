@@ -4,7 +4,8 @@ import yaml
 import json
 from jinja2 import Environment, FileSystemLoader
 
-app = Flask(__name__, static_url_path="")
+app = Flask(__name__, static_folder="./build", static_url_path="")
+#app = Flask(__name__)
 CORS(app)
 
 @app.route("/api/hello")
@@ -31,4 +32,6 @@ def postDict():
         f.write(tpl.render(request.json))
 
     return "ok", 200
+
+
 
