@@ -1,0 +1,17 @@
+{
+    "properties": {
+        "done": {
+            "default": false,
+            "title": "Done?",
+            "type": "boolean"
+        },
+        "title": {
+            "default": "A new task",
+            "title": "Title",
+            "type": "string"
+        }
+    },
+    "required": ["title"],
+    "title": "Todo",
+    "type": "object"
+}
